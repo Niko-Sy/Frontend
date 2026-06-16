@@ -5,6 +5,7 @@ import { isFallbackableError, normalizeCategories } from '../utils/normalize'
 
 const THEME_KEY = 'lostlink-theme-mode'
 const themeModes = ['system', 'light', 'dark']
+let systemThemeCleanup = null
 
 const getSystemTheme = () => {
   if (typeof window === 'undefined') return 'light'
@@ -34,9 +35,13 @@ export const useAppStore = defineStore('app', {
       this.themeMode = themeModes.includes(stored) ? stored : 'system'
       applyTheme(this.themeMode)
       if (typeof window !== 'undefined') {
-        window.matchMedia?.('(prefers-color-scheme: dark)').addEventListener?.('change', () => {
+        systemThemeCleanup?.()
+        const media = window.matchMedia?.('(prefers-color-scheme: dark)')
+        const listener = () => {
           if (this.themeMode === 'system') applyTheme('system')
-        })
+        }
+        media?.addEventListener?.('change', listener)
+        systemThemeCleanup = () => media?.removeEventListener?.('change', listener)
       }
     },
     setThemeMode(mode) {

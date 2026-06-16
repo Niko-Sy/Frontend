@@ -4,7 +4,7 @@ import { useUserStore } from '../store/user'
 const routes = [
   { path: '/', name: 'home', component: () => import('../views/user/Home.vue'), meta: { layout: 'user', title: '首页' } },
   { path: '/lost', name: 'lost', component: () => import('../views/user/ItemHall.vue'), props: { itemType: 'LOST' }, meta: { layout: 'user', title: '失物大厅' } },
-  { path: '/found', name: 'found', component: () => import('../views/user/ItemHall.vue'), props: { itemType: 'FOUND' }, meta: { layout: 'user', title: '招领大厅' } },
+  { path: '/found', name: 'found', component: () => import('../views/user/ItemHall.vue'), props: { itemType: 'FOUND' }, meta: { layout: 'user', title: '拾物大厅' } },
   { path: '/item/:id', name: 'item-detail', component: () => import('../views/user/ItemDetail.vue'), meta: { layout: 'user', title: '物品详情' } },
   { path: '/publish', name: 'publish', component: () => import('../views/user/Publish.vue'), meta: { layout: 'user', title: '发布信息', requiresAuth: true } },
   { path: '/my/items', name: 'my-items', component: () => import('../views/user/MyItems.vue'), meta: { layout: 'user', title: '我的发布', requiresAuth: true } },

@@ -17,6 +17,8 @@ const coverStyle = computed(() => {
   const image = props.item.coverImage || props.item.imageUrls?.[0]
   return image ? { backgroundImage: `url(${imageUrl(image)})` } : {}
 })
+
+const open = () => router.push(`/item/${props.item.id}`)
 </script>
 
 <template>
@@ -26,9 +28,9 @@ const coverStyle = computed(() => {
     role="button"
     tabindex="0"
     :aria-label="`查看${item.title}详情`"
-    @click="router.push(`/item/${item.id}`)"
-    @keydown.enter="router.push(`/item/${item.id}`)"
-    @keydown.space.prevent="router.push(`/item/${item.id}`)"
+    @click="open"
+    @keydown.enter="open"
+    @keydown.space.prevent="open"
   >
     <div class="item-cover" :style="coverStyle">
       <span v-if="!item.coverImage && !item.imageUrls?.length">{{ typeText(item.itemType) }}</span>
@@ -39,7 +41,7 @@ const coverStyle = computed(() => {
         <StatusTag :status="item.status" size="small" />
       </div>
       <h3>{{ item.title }}</h3>
-      <p class="muted">{{ item.categoryName }} · {{ item.location }}</p>
+      <p class="muted">{{ item.categoryName || '未分类' }} · {{ item.location || '地点待补充' }}</p>
       <p class="item-desc">{{ item.description || '暂无详细描述' }}</p>
       <div class="item-meta">
         <span><el-icon><Clock /></el-icon>{{ formatDate(item.eventTime) }}</span>

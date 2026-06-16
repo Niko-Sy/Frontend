@@ -24,6 +24,7 @@ export const CLAIM_STATUS = {
 export const HANDOVER_STATUS = {
   WAIT_CONFIRM: ['待确认', 'warning'],
   APPOINTED: ['已预约', 'primary'],
+  WAIT_HANDOVER: ['待交接', 'warning'],
   COMPLETED: ['已完成', 'success'],
   CANCELED: ['已取消', 'info'],
   CANCELLED: ['已取消', 'info'],

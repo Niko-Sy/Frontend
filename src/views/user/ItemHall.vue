@@ -34,11 +34,11 @@ const claimOpen = ref(false)
 const clueOpen = ref(false)
 const activeItem = ref(null)
 
-const title = computed(() => (props.itemType === 'LOST' ? '失物大厅' : '招领大厅'))
+const title = computed(() => (props.itemType === 'LOST' ? '失物大厅' : '拾物大厅'))
 const subtitle = computed(() =>
   props.itemType === 'LOST'
-    ? '查看是否有人正在寻找你捡到的物品，也可以为失主提交线索。'
-    : '展示拾物信息，失主可在线提交认领申请。',
+    ? '查看同学们正在寻找的物品，如果你有线索，可以直接提交给发布人。'
+    : '浏览校内拾物信息，确认特征后在线提交认领申请。',
 )
 const statusOptions = [
   { label: '可处理', value: 'AVAILABLE' },

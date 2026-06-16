@@ -17,9 +17,11 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
 
+const themeModes = ['system', 'light', 'dark']
 const storedTheme = localStorage.getItem('lostlink-theme-mode') || 'system'
+const safeTheme = themeModes.includes(storedTheme) ? storedTheme : 'system'
 const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches
-const resolvedTheme = storedTheme === 'system' ? (prefersDark ? 'dark' : 'light') : storedTheme
+const resolvedTheme = safeTheme === 'system' ? (prefersDark ? 'dark' : 'light') : safeTheme
 document.documentElement.dataset.theme = resolvedTheme
 document.documentElement.style.colorScheme = resolvedTheme
 

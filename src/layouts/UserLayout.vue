@@ -14,7 +14,7 @@ const appStore = useAppStore()
 const navs = [
   { label: '首页', path: '/' },
   { label: '失物大厅', path: '/lost' },
-  { label: '招领大厅', path: '/found' },
+  { label: '拾物大厅', path: '/found' },
   { label: '发布信息', path: '/publish' },
 ]
 
@@ -25,6 +25,7 @@ const mobileTabs = [
   { label: '消息', path: '/my/notices', icon: 'Bell' },
   { label: '我的', path: '/profile', icon: 'User' },
 ]
+
 const themeOptions = [
   { label: '跟随系统', value: 'system', icon: 'Monitor' },
   { label: '浅色模式', value: 'light', icon: 'Sunny' },
@@ -35,6 +36,8 @@ const activePath = computed(() => {
   if (route.path.startsWith('/lost')) return '/lost'
   if (route.path.startsWith('/found')) return '/found'
   if (route.path.startsWith('/publish')) return '/publish'
+  if (route.path.startsWith('/my/notices')) return '/my/notices'
+  if (route.path.startsWith('/profile') || route.path.startsWith('/my/')) return '/profile'
   return route.path
 })
 
@@ -55,7 +58,7 @@ const goLogin = () => router.push({ path: '/login', query: { redirect: route.ful
           <small>LostLink Campus</small>
         </span>
       </button>
-      <nav class="desktop-nav">
+      <nav class="desktop-nav" aria-label="主导航">
         <RouterLink v-for="nav in navs" :key="nav.path" :class="{ active: activePath === nav.path }" :to="nav.path">
           {{ nav.label }}
         </RouterLink>
@@ -107,7 +110,7 @@ const goLogin = () => router.push({ path: '/login', query: { redirect: route.ful
       <span>联系校内管理员处理争议与紧急下架</span>
     </footer>
 
-    <nav class="bottom-tabbar">
+    <nav class="bottom-tabbar" aria-label="移动端导航">
       <RouterLink v-for="tab in mobileTabs" :key="tab.path" :to="tab.path" :class="{ active: activePath === tab.path }" :aria-label="tab.label">
         <el-icon><component :is="tab.icon" /></el-icon>
         <span>{{ tab.label }}</span>

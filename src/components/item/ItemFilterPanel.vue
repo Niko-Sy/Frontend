@@ -31,7 +31,7 @@ const reset = () => {
 </script>
 
 <template>
-  <section class="filter-panel">
+  <section class="filter-panel" aria-label="物品筛选">
     <el-input v-model="form.keyword" class="filter-keyword" clearable placeholder="关键词：物品名称、描述" @keyup.enter="search" @change="update">
       <template #prefix><el-icon><Search /></el-icon></template>
     </el-input>

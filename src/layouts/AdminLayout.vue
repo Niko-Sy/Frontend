@@ -21,6 +21,7 @@ const menus = [
   { label: '统计分析', path: '/admin/statistics', icon: 'TrendCharts' },
   { label: '操作日志', path: '/admin/logs', icon: 'Document' },
 ]
+
 const themeOptions = [
   { label: '跟随系统', value: 'system', icon: 'Monitor' },
   { label: '浅色模式', value: 'light', icon: 'Sunny' },
@@ -37,7 +38,7 @@ const title = computed(() => route.meta.title || '后台管理')
         <span class="brand-mark">拾</span>
         <span v-if="!collapsed">管理后台</span>
       </button>
-      <nav>
+      <nav aria-label="后台导航">
         <RouterLink v-for="menu in menus" :key="menu.path" :to="menu.path" :class="{ active: route.path === menu.path }">
           <el-icon><component :is="menu.icon" /></el-icon>
           <span v-if="!collapsed">{{ menu.label }}</span>
@@ -48,7 +49,7 @@ const title = computed(() => route.meta.title || '后台管理')
     <section class="admin-workspace">
       <header class="admin-header">
         <div>
-          <el-button circle text @click="collapsed = !collapsed">
+          <el-button circle text aria-label="折叠菜单" @click="collapsed = !collapsed">
             <el-icon><Fold v-if="!collapsed" /><Expand v-else /></el-icon>
           </el-button>
           <span class="breadcrumb">拾光校园 / {{ title }}</span>

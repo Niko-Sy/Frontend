@@ -8,7 +8,7 @@ defineProps({
   <el-timeline class="timeline-log">
     <el-timeline-item
       v-for="log in logs"
-      :key="log.id || log.title"
+      :key="log.id || log.title || log.createTime"
       :timestamp="log.createTime"
       :type="log.status === 'DONE' || log.status === 'SUCCESS' ? 'success' : log.status === 'CURRENT' ? 'primary' : 'info'"
     >

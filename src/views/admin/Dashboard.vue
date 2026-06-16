@@ -16,12 +16,12 @@ const categoryData = ref([])
 const monthlyData = ref([])
 
 const summaryCards = computed(() => [
-  { label: '总发布量', value: summary.value.totalItems, icon: 'Box' },
-  { label: '待审核物品', value: summary.value.pendingItems, icon: 'Clock' },
-  { label: '待审核认领', value: summary.value.pendingClaims, icon: 'Checked' },
-  { label: '待交接物品', value: summary.value.waitHandoverItems, icon: 'Switch' },
-  { label: '今日新增', value: summary.value.todayItems, icon: 'Plus' },
-  { label: '过期数量', value: summary.value.expiredItems, icon: 'Warning' },
+  { label: '总发布量', value: summary.value.totalItems, icon: 'Box', hint: '平台累计收录' },
+  { label: '待审物品', value: summary.value.pendingItems, icon: 'Clock', hint: '需要管理员处理' },
+  { label: '待审认领', value: summary.value.pendingClaims, icon: 'Checked', hint: '核对申请材料' },
+  { label: '待交接物品', value: summary.value.waitHandoverItems, icon: 'Switch', hint: '线下闭环跟进' },
+  { label: '今日新增', value: summary.value.todayItems, icon: 'Plus', hint: '当天发布信息' },
+  { label: '过期数量', value: summary.value.expiredItems, icon: 'Warning', hint: '建议及时处理' },
 ])
 
 const statusText = computed(() =>
@@ -35,6 +35,8 @@ const categoryText = computed(() =>
 const monthlyText = computed(() =>
   monthlyData.value.length ? monthlyData.value.map((item) => `${item.month} ${item.count}`).join(' · ') : '暂无趋势数据',
 )
+
+const maxCategory = computed(() => Math.max(...categoryData.value.map((item) => Number(item.value) || 0), 1))
 
 onMounted(async () => {
   try {
@@ -61,15 +63,44 @@ onMounted(async () => {
 
 <template>
   <section class="admin-page">
-    <div class="admin-page-head"><h1>数据看板</h1><p>系统整体运行概览与待处理提醒</p></div>
+    <div class="admin-page-head">
+      <div>
+        <span class="eyebrow">Admin Workspace</span>
+        <h1>数据看板</h1>
+        <p>系统整体运行概览、待处理事项和近期趋势。</p>
+      </div>
+      <div class="flow-capsules">
+        <span>今日新增 {{ summary.todayItems }}</span>
+        <span>待处理 {{ summary.pendingItems + summary.pendingClaims }}</span>
+      </div>
+    </div>
+
     <section class="stat-grid">
-      <StatisticCard v-for="card in summaryCards" :key="card.label" :label="card.label" :value="card.value" :icon="card.icon" />
+      <StatisticCard v-for="card in summaryCards" :key="card.label" :label="card.label" :value="card.value" :icon="card.icon" :hint="card.hint" />
     </section>
+
     <section class="chart-grid">
-      <el-card shadow="never"><h3>状态分布</h3><div class="chart-placeholder">{{ statusText }}</div></el-card>
-      <el-card shadow="never"><h3>分类统计</h3><div class="chart-placeholder">{{ categoryText }}</div></el-card>
-      <el-card shadow="never"><h3>月度趋势</h3><div class="chart-placeholder">{{ monthlyText }}</div></el-card>
+      <el-card shadow="never">
+        <h3>状态分布</h3>
+        <div class="donut-demo">{{ statusText }}</div>
+      </el-card>
+      <el-card shadow="never">
+        <h3>分类热度</h3>
+        <div v-if="categoryData.length" class="rank-list">
+          <div v-for="item in categoryData.slice(0, 5)" :key="item.name">
+            <span>{{ item.name }}</span>
+            <i :style="{ width: `${Math.max(8, (Number(item.value) || 0) / maxCategory * 100)}%` }" />
+            <strong>{{ item.value }}</strong>
+          </div>
+        </div>
+        <div v-else class="chart-placeholder">{{ categoryText }}</div>
+      </el-card>
+      <el-card shadow="never">
+        <h3>月度趋势</h3>
+        <div class="line-demo">{{ monthlyText }}</div>
+      </el-card>
     </section>
+
     <section class="two-column">
       <el-card shadow="never">
         <h3>最新待审核物品</h3>
