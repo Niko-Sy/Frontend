@@ -1,6 +1,7 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import StatsGrid from '../../components/common/StatsGrid.vue'
 import StatusTag from '../../components/common/StatusTag.vue'
 import EmptyState from '../../components/common/EmptyState.vue'
 import { adminCompleteHandover, listAdminHandovers, updateHandoverRemark } from '../../api/adminHandover'
@@ -13,6 +14,13 @@ const loading = ref(false)
 const active = ref(null)
 const drawer = ref(false)
 const remark = ref('')
+
+const stats = computed(() => [
+  { label: '全部交接', value: records.value.length, icon: 'Switch', tone: 'primary' },
+  { label: '待确认', value: records.value.filter((item) => item.status === 'WAIT_CONFIRM').length, icon: 'Clock', tone: 'warning' },
+  { label: '已预约', value: records.value.filter((item) => item.status === 'APPOINTED').length, icon: 'Calendar', tone: 'sky' },
+  { label: '已完成', value: records.value.filter((item) => item.status === 'COMPLETED').length, icon: 'CircleCheck', tone: 'success' },
+])
 
 const load = async () => {
   loading.value = true
@@ -59,25 +67,33 @@ onMounted(load)
 <template>
   <section class="admin-page">
     <div class="admin-page-head">
-      <h1>交接管理</h1>
-      <p>跟进预约、交接码和线下完成状态。</p>
+      <div>
+        <span class="eyebrow">Handover</span>
+        <h1>交接管理</h1>
+        <p>跟进预约、交接码和线下完成状态。</p>
+      </div>
     </div>
-    <el-table v-loading="loading" :data="records" @row-click="open">
-      <el-table-column prop="itemTitle" label="物品名称" min-width="180" />
-      <el-table-column prop="applicantName" label="申请人" width="110" />
-      <el-table-column prop="publisherName" label="发布人" width="110" />
-      <el-table-column label="预约时间" width="160"><template #default="{ row }">{{ formatDate(row.appointmentTime) }}</template></el-table-column>
-      <el-table-column label="地点" min-width="160"><template #default="{ row }">{{ row.appointmentLocation || '-' }}</template></el-table-column>
-      <el-table-column label="状态" width="110"><template #default="{ row }"><StatusTag :status="row.status" kind="handover" /></template></el-table-column>
-      <el-table-column label="操作" width="120"><template #default="{ row }"><el-button link type="primary" @click.stop="open(row)">详情</el-button></template></el-table-column>
-    </el-table>
+    <StatsGrid :items="stats" />
+    <section class="premium-table-shell">
+      <el-table v-loading="loading" :data="records" @row-click="open">
+        <el-table-column prop="itemTitle" label="物品名称" min-width="180" />
+        <el-table-column prop="applicantName" label="申请人" width="110" />
+        <el-table-column prop="publisherName" label="发布人" width="110" />
+        <el-table-column label="预约时间" width="160"><template #default="{ row }">{{ formatDate(row.appointmentTime) }}</template></el-table-column>
+        <el-table-column label="地点" min-width="160"><template #default="{ row }">{{ row.appointmentLocation || '-' }}</template></el-table-column>
+        <el-table-column label="状态" width="110"><template #default="{ row }"><StatusTag :status="row.status" kind="handover" /></template></el-table-column>
+        <el-table-column label="操作" width="120"><template #default="{ row }"><el-button link type="primary" @click.stop="open(row)">详情</el-button></template></el-table-column>
+      </el-table>
+    </section>
     <EmptyState v-if="!loading && !records.length" title="暂无交接记录" />
     <el-drawer v-model="drawer" title="交接详情" size="480px">
       <template v-if="active">
-        <h3>{{ active.itemTitle }}</h3>
-        <p>预约时间：{{ formatDate(active.appointmentTime) }}</p>
-        <p>预约地点：{{ active.appointmentLocation || '待设置' }}</p>
-        <p>交接码：{{ active.handoverCode }}</p>
+        <div class="drawer-section">
+          <h3>{{ active.itemTitle }}</h3>
+          <p>预约时间：{{ formatDate(active.appointmentTime) }}</p>
+          <p>预约地点：{{ active.appointmentLocation || '待设置' }}</p>
+          <p class="handover-code">交接码：{{ active.handoverCode }}</p>
+        </div>
         <el-input v-model="remark" type="textarea" :rows="4" placeholder="交接备注" />
       </template>
       <template #footer>

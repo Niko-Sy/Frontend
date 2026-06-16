@@ -44,6 +44,7 @@ const open = (row) => {
   active.value = row
   drawerOpen.value = true
 }
+
 const approve = async (row) => {
   try {
     await approveItem(row.id)
@@ -54,6 +55,7 @@ const approve = async (row) => {
     ElMessage.error(e.message)
   }
 }
+
 const reject = async ({ id, remark }) => {
   try {
     await rejectItem(id, { reviewRemark: remark })
@@ -71,8 +73,14 @@ onMounted(load)
 <template>
   <section class="admin-page">
     <div class="admin-page-head">
-      <h1>物品审核</h1>
-      <p>审核发布信息、查看疑似重复并处理下架。</p>
+      <div>
+        <span class="eyebrow">Review Queue</span>
+        <h1>物品审核</h1>
+        <p>审核用户发布的信息，识别重复风险并处理不合规内容。</p>
+      </div>
+      <div class="flow-capsules">
+        <span>待处理 {{ records.length }}</span>
+      </div>
     </div>
     <section class="filter-panel">
       <el-input v-model="filters.keyword" placeholder="关键词" clearable @keyup.enter="load" />
@@ -82,19 +90,21 @@ onMounted(load)
       </el-select>
       <el-button type="primary" @click="load">搜索</el-button>
     </section>
-    <el-table v-loading="loading" :data="records" @row-click="open">
-      <el-table-column prop="title" label="物品名称" min-width="180" />
-      <el-table-column label="类型" width="90"><template #default="{ row }">{{ typeText(row.itemType) }}</template></el-table-column>
-      <el-table-column prop="categoryName" label="分类" width="110" />
-      <el-table-column prop="publisherName" label="发布人" width="110" />
-      <el-table-column prop="location" label="地点" min-width="160" />
-      <el-table-column label="提交时间" width="160"><template #default="{ row }">{{ formatDate(row.createTime) }}</template></el-table-column>
-      <el-table-column label="疑似重复" width="100"><template #default>低</template></el-table-column>
-      <el-table-column label="状态" width="110"><template #default="{ row }"><StatusTag :status="row.status" /></template></el-table-column>
-      <el-table-column label="操作" fixed="right" width="150">
-        <template #default="{ row }"><el-button link type="primary" @click.stop="open(row)">审核</el-button></template>
-      </el-table-column>
-    </el-table>
+    <section class="premium-table-shell">
+      <el-table v-loading="loading" :data="records" @row-click="open">
+        <el-table-column prop="title" label="物品名称" min-width="180" />
+        <el-table-column label="类型" width="90"><template #default="{ row }">{{ typeText(row.itemType) }}</template></el-table-column>
+        <el-table-column prop="categoryName" label="分类" width="110" />
+        <el-table-column prop="publisherName" label="发布人" width="110" />
+        <el-table-column prop="location" label="地点" min-width="160" />
+        <el-table-column label="提交时间" width="160"><template #default="{ row }">{{ formatDate(row.createTime) }}</template></el-table-column>
+        <el-table-column label="风险" width="100"><template #default>低</template></el-table-column>
+        <el-table-column label="状态" width="110"><template #default="{ row }"><StatusTag :status="row.status" /></template></el-table-column>
+        <el-table-column label="操作" fixed="right" width="150">
+          <template #default="{ row }"><el-button link type="primary" @click.stop="open(row)">审核</el-button></template>
+        </el-table-column>
+      </el-table>
+    </section>
     <EmptyState v-if="!loading && !records.length" title="暂无待审核物品" description="当前筛选条件下没有需要处理的发布记录。" />
     <AdminReviewDrawer v-if="active" v-model="drawerOpen" title="物品审核详情" :record="active" @approve="approve" @reject="reject" />
   </section>

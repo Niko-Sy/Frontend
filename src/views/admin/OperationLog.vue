@@ -33,18 +33,23 @@ const load = async () => {
     loading.value = false
   }
 }
+
 const open = (row) => {
   detail.value = row
   drawer.value = true
 }
+
 onMounted(load)
 </script>
 
 <template>
   <section class="admin-page">
     <div class="admin-page-head">
-      <h1>操作日志</h1>
-      <p>记录管理员关键操作、请求地址与执行结果。</p>
+      <div>
+        <span class="eyebrow">Audit Trail</span>
+        <h1>操作日志</h1>
+        <p>记录管理员关键操作、请求地址与执行结果。</p>
+      </div>
     </div>
     <section class="filter-panel">
       <el-input v-model="filters.keyword" placeholder="操作人 / 模块" clearable @keyup.enter="load" />
@@ -55,15 +60,17 @@ onMounted(load)
       </el-select>
       <el-button type="primary" @click="load">搜索</el-button>
     </section>
-    <el-table v-loading="loading" :data="logs" @row-click="open">
-      <el-table-column prop="userId" label="操作人" width="90" />
-      <el-table-column prop="module" label="模块" />
-      <el-table-column prop="operation" label="操作内容" min-width="160" />
-      <el-table-column prop="requestMethod" label="方法" width="90" />
-      <el-table-column prop="requestUrl" label="请求地址" min-width="220" />
-      <el-table-column prop="ipAddress" label="IP 地址" />
-      <el-table-column label="时间"><template #default="{ row }">{{ formatDate(row.createTime) }}</template></el-table-column>
-    </el-table>
+    <section class="premium-table-shell">
+      <el-table v-loading="loading" :data="logs" @row-click="open">
+        <el-table-column prop="userId" label="操作人" width="90" />
+        <el-table-column prop="module" label="模块" />
+        <el-table-column prop="operation" label="操作内容" min-width="160" />
+        <el-table-column prop="requestMethod" label="方法" width="90" />
+        <el-table-column prop="requestUrl" label="请求地址" min-width="220" />
+        <el-table-column prop="ipAddress" label="IP 地址" />
+        <el-table-column label="时间"><template #default="{ row }">{{ formatDate(row.createTime) }}</template></el-table-column>
+      </el-table>
+    </section>
     <EmptyState v-if="!loading && !logs.length" title="暂无操作日志" description="当前筛选条件下没有日志记录。" />
     <el-drawer v-model="drawer" title="日志详情" size="460px">
       <pre>{{ detail }}</pre>

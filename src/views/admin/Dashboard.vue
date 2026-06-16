@@ -1,5 +1,6 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
+import ChartCard from '../../components/admin/ChartCard.vue'
 import StatisticCard from '../../components/admin/StatisticCard.vue'
 import StatusTag from '../../components/common/StatusTag.vue'
 import { categoryStats, dashboardSummary as getSummary, itemStatusStats, monthlyStats, recentPending } from '../../api/statistics'
@@ -24,19 +25,9 @@ const summaryCards = computed(() => [
   { label: '过期数量', value: summary.value.expiredItems, icon: 'Warning', hint: '建议及时处理' },
 ])
 
-const statusText = computed(() =>
-  statusData.value.length
-    ? statusData.value.map((item) => `${statusMeta(item.name).label} ${item.value}`).join(' · ')
-    : '暂无状态数据',
-)
-const categoryText = computed(() =>
-  categoryData.value.length ? categoryData.value.map((item) => `${item.name} ${item.value}`).join(' · ') : '暂无分类数据',
-)
-const monthlyText = computed(() =>
-  monthlyData.value.length ? monthlyData.value.map((item) => `${item.month} ${item.count}`).join(' · ') : '暂无趋势数据',
-)
-
-const maxCategory = computed(() => Math.max(...categoryData.value.map((item) => Number(item.value) || 0), 1))
+const statusChart = computed(() => statusData.value.map((item) => ({ name: statusMeta(item.name).label, value: item.value })))
+const categoryChart = computed(() => categoryData.value.map((item) => ({ name: item.name, value: item.value })))
+const monthlyChart = computed(() => monthlyData.value.map((item) => ({ name: item.month, value: item.count })))
 
 onMounted(async () => {
   try {
@@ -80,25 +71,9 @@ onMounted(async () => {
     </section>
 
     <section class="chart-grid">
-      <el-card shadow="never">
-        <h3>状态分布</h3>
-        <div class="donut-demo">{{ statusText }}</div>
-      </el-card>
-      <el-card shadow="never">
-        <h3>分类热度</h3>
-        <div v-if="categoryData.length" class="rank-list">
-          <div v-for="item in categoryData.slice(0, 5)" :key="item.name">
-            <span>{{ item.name }}</span>
-            <i :style="{ width: `${Math.max(8, (Number(item.value) || 0) / maxCategory * 100)}%` }" />
-            <strong>{{ item.value }}</strong>
-          </div>
-        </div>
-        <div v-else class="chart-placeholder">{{ categoryText }}</div>
-      </el-card>
-      <el-card shadow="never">
-        <h3>月度趋势</h3>
-        <div class="line-demo">{{ monthlyText }}</div>
-      </el-card>
+      <ChartCard title="状态分布" subtitle="物品生命周期分布" type="donut" :data="statusChart" />
+      <ChartCard title="分类热度" subtitle="不同分类发布量对比" type="horizontal-bar" :data="categoryChart" />
+      <ChartCard title="月度趋势" subtitle="发布量随时间变化" type="line" :data="monthlyChart" />
     </section>
 
     <section class="two-column">

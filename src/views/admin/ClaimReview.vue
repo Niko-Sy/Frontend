@@ -36,10 +36,12 @@ const load = async () => {
     loading.value = false
   }
 }
+
 const open = (row) => {
   active.value = row
   drawerOpen.value = true
 }
+
 const approve = async (row) => {
   try {
     await approveClaim(row.id)
@@ -50,6 +52,7 @@ const approve = async (row) => {
     ElMessage.error(e.message)
   }
 }
+
 const reject = async ({ id, remark }) => {
   try {
     await rejectClaim(id, { reviewRemark: remark })
@@ -60,6 +63,7 @@ const reject = async ({ id, remark }) => {
     ElMessage.error(e.message)
   }
 }
+
 const needMore = async ({ id, remark }) => {
   try {
     await needMoreClaim(id, { reviewRemark: remark })
@@ -70,14 +74,19 @@ const needMore = async ({ id, remark }) => {
     ElMessage.error(e.message)
   }
 }
+
 onMounted(load)
 </script>
 
 <template>
   <section class="admin-page">
     <div class="admin-page-head">
-      <h1>认领审核</h1>
-      <p>核对申请说明、证明材料和同物品其他申请。</p>
+      <div>
+        <span class="eyebrow">Claim Review</span>
+        <h1>认领审核</h1>
+        <p>核对申请说明、证明材料和同物品的其他申请。</p>
+      </div>
+      <div class="flow-capsules"><span>待处理 {{ records.length }}</span></div>
     </div>
     <section class="filter-panel">
       <el-input v-model="filters.keyword" placeholder="申请人 / 物品名称" clearable @keyup.enter="load" />

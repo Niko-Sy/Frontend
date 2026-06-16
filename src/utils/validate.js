@@ -8,7 +8,7 @@ export const required = (value, message = '该字段不能为空') => {
 
 export const lengthBetween = (value, min, max, label) => {
   const len = String(value || '').trim().length
-  if (len < min || len > max) return `${label}需为 ${min}-${max} 个字符`
+  if (len < min || len > max) return `${label}需要为 ${min}-${max} 个字符`
   return ''
 }
 

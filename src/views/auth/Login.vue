@@ -38,7 +38,7 @@ const submit = async () => {
     </div>
     <el-card class="auth-card" shadow="never">
       <h2>登录拾光校园</h2>
-      <p>继续管理你的发布、认领和交接进度</p>
+      <p>继续管理你的发布、认领和交接进度。</p>
       <el-form label-position="top" @submit.prevent>
         <el-form-item label="用户名">
           <el-input v-model="form.username" size="large" placeholder="请输入用户名" @keyup.enter="submit" />

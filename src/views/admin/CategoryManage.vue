@@ -1,6 +1,7 @@
 <script setup>
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import StatsGrid from '../../components/common/StatsGrid.vue'
 import StatusTag from '../../components/common/StatusTag.vue'
 import { createCategory, deleteCategory, disableCategory, enableCategory, listAdminCategories, updateCategory } from '../../api/adminCategory'
 import { mockCategories } from '../../utils/mock'
@@ -10,6 +11,13 @@ import { isFallbackableError, normalizeCategories, normalizeCategory } from '../
 const records = ref([])
 const dialog = ref(false)
 const form = reactive({ id: null, categoryName: '', icon: '', sortOrder: 1, status: 1 })
+
+const stats = computed(() => [
+  { label: '分类总数', value: records.value.length, icon: 'Collection', tone: 'primary' },
+  { label: '启用分类', value: records.value.filter((item) => item.status).length, icon: 'CircleCheck', tone: 'success' },
+  { label: '关联物品', value: records.value.reduce((sum, item) => sum + (Number(item.itemCount) || 0), 0), icon: 'Box', tone: 'sky' },
+  { label: '禁用分类', value: records.value.filter((item) => !item.status).length, icon: 'Warning', tone: 'warning' },
+])
 
 const load = async () => {
   try {
@@ -70,26 +78,30 @@ onMounted(load)
   <section class="admin-page">
     <div class="admin-page-head">
       <div>
+        <span class="eyebrow">Taxonomy</span>
         <h1>分类管理</h1>
-        <p>维护发布时可选的物品分类</p>
+        <p>维护发布时可选的物品分类和展示顺序。</p>
       </div>
       <el-button type="primary" @click="open()">新增分类</el-button>
     </div>
-    <el-table :data="records">
-      <el-table-column prop="categoryName" label="分类名称" />
-      <el-table-column prop="icon" label="图标" />
-      <el-table-column prop="sortOrder" label="排序" />
-      <el-table-column label="状态"><template #default="{ row }"><StatusTag :status="row.status" kind="user" /></template></el-table-column>
-      <el-table-column prop="itemCount" label="关联物品数" />
-      <el-table-column label="创建时间"><template #default="{ row }">{{ formatDate(row.createTime) }}</template></el-table-column>
-      <el-table-column label="操作" width="220">
-        <template #default="{ row }">
-          <el-button link type="primary" @click="open(row)">编辑</el-button>
-          <el-button link @click="toggle(row)">{{ row.status ? '禁用' : '启用' }}</el-button>
-          <el-button link type="danger" @click="remove(row)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <StatsGrid :items="stats" />
+    <section class="premium-table-shell">
+      <el-table :data="records">
+        <el-table-column prop="categoryName" label="分类名称" />
+        <el-table-column prop="icon" label="图标" />
+        <el-table-column prop="sortOrder" label="排序" />
+        <el-table-column label="状态"><template #default="{ row }"><StatusTag :status="row.status" kind="user" /></template></el-table-column>
+        <el-table-column prop="itemCount" label="关联物品数" />
+        <el-table-column label="创建时间"><template #default="{ row }">{{ formatDate(row.createTime) }}</template></el-table-column>
+        <el-table-column label="操作" width="220">
+          <template #default="{ row }">
+            <el-button link type="primary" @click="open(row)">编辑</el-button>
+            <el-button link @click="toggle(row)">{{ row.status ? '禁用' : '启用' }}</el-button>
+            <el-button link type="danger" @click="remove(row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </section>
     <el-dialog v-model="dialog" title="分类表单" width="420px">
       <el-form label-position="top">
         <el-form-item label="分类名称"><el-input v-model="form.categoryName" /></el-form-item>

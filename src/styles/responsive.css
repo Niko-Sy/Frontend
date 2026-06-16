@@ -14,6 +14,7 @@
   }
 
   .stat-grid,
+  .stats-grid,
   .quick-grid,
   .item-grid,
   .handover-grid,
@@ -220,6 +221,7 @@
   }
 
   .stat-grid,
+  .stats-grid,
   .quick-grid,
   .confidence-strip,
   .item-grid,
@@ -230,6 +232,10 @@
   .form-grid,
   .filter-panel,
   .admin-sidebar nav {
+    grid-template-columns: 1fr;
+  }
+
+  .hall-compact-head {
     grid-template-columns: 1fr;
   }
 

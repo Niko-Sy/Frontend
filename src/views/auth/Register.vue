@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, computed } from 'vue'
+import { computed, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { register } from '../../api/auth'
@@ -25,11 +25,11 @@ const passwordStrength = computed(() => {
 })
 
 const validate = () => {
-  if (!/^\w{4,20}$/.test(form.username)) return '用户名需为 4-20 位字母、数字或下划线'
-  if (form.nickname.trim().length < 2 || form.nickname.trim().length > 20) return '昵称需为 2-20 个字符'
+  if (!/^\w{4,20}$/.test(form.username)) return '用户名需要为 4-20 位字母、数字或下划线'
+  if (form.nickname.trim().length < 2 || form.nickname.trim().length > 20) return '昵称需要为 2-20 个字符'
   if (!phonePattern.test(form.phone)) return '手机号格式不正确'
   if (!emailPattern.test(form.email)) return '邮箱格式不正确'
-  if (form.password.length < 6 || form.password.length > 20) return '密码需为 6-20 位'
+  if (form.password.length < 6 || form.password.length > 20) return '密码需要为 6-20 位'
   if (form.password !== form.confirmPassword) return '两次密码不一致'
   return ''
 }
@@ -57,6 +57,11 @@ const submit = async () => {
       <span class="brand-mark">拾</span>
       <h1>创建校园互助账号</h1>
       <p>用清晰的联系方式和可信资料，让招领流程更顺畅。</p>
+      <div class="flow-capsules">
+        <span>安全联系方式</span>
+        <span>隐私保护</span>
+        <span>进度通知</span>
+      </div>
     </div>
     <el-card class="auth-card" shadow="never">
       <h2>注册账号</h2>

@@ -107,10 +107,15 @@ onMounted(async () => {
 </script>
 
 <template>
-  <PageContainer :title="title" :subtitle="subtitle">
-    <template #actions>
+  <PageContainer no-header compact>
+    <div class="hall-compact-head">
+      <div>
+        <span class="eyebrow">{{ itemType === 'LOST' ? 'Lost Items' : 'Found Items' }}</span>
+        <h1>{{ title }}</h1>
+        <p>{{ subtitle }}</p>
+      </div>
       <el-segmented v-model="view" :options="[{ label: '卡片', value: 'card' }, { label: '列表', value: 'list' }]" />
-    </template>
+    </div>
     <ItemFilterPanel v-model="filters" :categories="appStore.categories" :status-options="statusOptions" @search="load" @reset="load" />
     <div class="result-bar">
       <span>共找到 {{ page.total }} 条结果</span>

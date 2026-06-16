@@ -1,6 +1,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import EmptyState from '../../components/common/EmptyState.vue'
+import StatsGrid from '../../components/common/StatsGrid.vue'
 import StatusTag from '../../components/common/StatusTag.vue'
 import { listAdminItems } from '../../api/adminItem'
 import { mockItems } from '../../utils/mock'
@@ -22,6 +23,12 @@ const near = computed(() => {
     })
     .slice(0, 10)
 })
+const stats = computed(() => [
+  { label: '全部记录', value: items.value.length, icon: 'Box', tone: 'primary' },
+  { label: '即将过期', value: near.value.length, icon: 'Clock', tone: 'warning' },
+  { label: '已过期', value: expired.value.length, icon: 'Warning', tone: 'warning' },
+  { label: '可处理', value: items.value.filter((item) => item.status === 'AVAILABLE').length, icon: 'CircleCheck', tone: 'success' },
+])
 
 const load = async () => {
   loading.value = true
@@ -41,9 +48,13 @@ onMounted(load)
 <template>
   <section class="admin-page">
     <div class="admin-page-head">
-      <h1>过期信息管理</h1>
-      <p>查看自动过期、即将过期与历史归档信息。</p>
+      <div>
+        <span class="eyebrow">Expiration</span>
+        <h1>过期信息管理</h1>
+        <p>查看自动过期、即将过期与历史归档信息。</p>
+      </div>
     </div>
+    <StatsGrid :items="stats" />
     <section v-loading="loading" class="two-column">
       <el-card shadow="never">
         <h3>即将过期</h3>
