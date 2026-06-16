@@ -104,7 +104,7 @@ onMounted(load)
 </script>
 
 <template>
-  <PageContainer v-loading="loading" title="物品详情" subtitle="完整信息、状态时间线与可执行操作">
+  <PageContainer v-loading="loading" header-mode="compact" title="物品详情" subtitle="完整信息、状态时间线与可执行操作">
     <template #actions>
       <el-button @click="router.back()">返回</el-button>
     </template>

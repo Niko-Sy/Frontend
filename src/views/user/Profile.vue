@@ -56,7 +56,7 @@ const savePassword = async () => {
 </script>
 
 <template>
-  <PageContainer eyebrow="Profile" title="个人资料" subtitle="维护联系方式、账号安全和校内互助记录。">
+  <PageContainer no-header compact>
     <section class="profile-grid">
       <el-card shadow="never" class="profile-card identity-card">
         <el-avatar :size="86">{{ userStore.profile?.nickname?.slice(0, 1) || '我' }}</el-avatar>

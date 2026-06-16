@@ -36,41 +36,44 @@ const title = computed(() => route.meta.title || '后台管理')
     <aside class="admin-sidebar">
       <button class="admin-brand" type="button" @click="router.push('/admin/dashboard')">
         <span class="brand-mark">拾</span>
-        <span v-if="!collapsed">管理后台</span>
+        <span class="admin-brand-text">管理后台</span>
       </button>
       <nav aria-label="后台导航">
         <RouterLink v-for="menu in menus" :key="menu.path" :to="menu.path" :class="{ active: route.path === menu.path }">
           <el-icon><component :is="menu.icon" /></el-icon>
-          <span v-if="!collapsed">{{ menu.label }}</span>
+          <span class="admin-menu-text">{{ menu.label }}</span>
         </RouterLink>
       </nav>
+      <button class="admin-collapse-btn" type="button" :aria-label="collapsed ? '展开侧边栏' : '收起侧边栏'" @click="collapsed = !collapsed">
+        <el-icon><Expand v-if="collapsed" /><Fold v-else /></el-icon>
+        <span class="admin-collapse-text">收起</span>
+      </button>
     </aside>
 
     <section class="admin-workspace">
       <header class="admin-header">
-        <div>
-          <el-button circle text aria-label="折叠菜单" @click="collapsed = !collapsed">
-            <el-icon><Fold v-if="!collapsed" /><Expand v-else /></el-icon>
-          </el-button>
-          <span class="breadcrumb">拾光校园 / {{ title }}</span>
-        </div>
-        <div class="admin-user">
-          <el-dropdown trigger="click" class="theme-menu" @command="appStore.setThemeMode">
-            <button class="icon-action" type="button" :aria-label="`当前主题：${appStore.themeLabel}`">
-              <el-icon><Moon v-if="appStore.resolvedTheme === 'dark'" /><Sunny v-else /></el-icon>
-            </button>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item v-for="theme in themeOptions" :key="theme.value" :command="theme.value">
-                  <el-icon><component :is="theme.icon" /></el-icon>
-                  <span>{{ theme.label }}</span>
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
-          <el-button text @click="router.push('/')">前台首页</el-button>
-          <el-avatar :size="34">{{ userStore.profile?.nickname?.slice(0, 1) || '管' }}</el-avatar>
-          <span>{{ userStore.profile?.nickname || '管理员' }}</span>
+        <div class="admin-header-inner">
+          <div>
+            <span class="breadcrumb">拾光校园 / {{ title }}</span>
+          </div>
+          <div class="admin-user">
+            <el-dropdown trigger="click" class="theme-menu" @command="appStore.setThemeMode">
+              <button class="icon-action" type="button" :aria-label="`当前主题：${appStore.themeLabel}`">
+                <el-icon><Moon v-if="appStore.resolvedTheme === 'dark'" /><Sunny v-else /></el-icon>
+              </button>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item v-for="theme in themeOptions" :key="theme.value" :command="theme.value">
+                    <el-icon><component :is="theme.icon" /></el-icon>
+                    <span>{{ theme.label }}</span>
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+            <el-button text @click="router.push('/')">前台首页</el-button>
+            <el-avatar :size="34">{{ userStore.profile?.nickname?.slice(0, 1) || '管' }}</el-avatar>
+            <span>{{ userStore.profile?.nickname || '管理员' }}</span>
+          </div>
         </div>
       </header>
       <main class="admin-main">

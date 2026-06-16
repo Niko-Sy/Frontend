@@ -58,7 +58,7 @@ onMounted(load)
 </script>
 
 <template>
-  <PageContainer title="我的发布" subtitle="管理自己发布的失物与拾物信息">
+  <PageContainer header-mode="compact" title="我的发布" subtitle="管理自己发布的失物与拾物信息">
     <section class="stat-grid">
       <article v-for="stat in stats" :key="stat.value" class="mini-stat">
         <strong>{{ stat.count }}</strong>

@@ -67,7 +67,7 @@ onMounted(load)
     <section class="home-hero">
       <div>
         <span class="eyebrow">LostLink Campus</span>
-        <h1>让校园遗失物品更快回家</h1>
+        <h1 style="font-size: 3.6rem; font-weight: 600;">让校园遗失物品更快回家</h1>
         <p>发布、查找、认领、交接，一站式完成。用更清晰的流程，把每一次捡获都变成一次靠谱的归还。</p>
         <div class="hero-search">
           <el-select v-model="searchType" aria-label="搜索类型">

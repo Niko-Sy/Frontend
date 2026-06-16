@@ -9,6 +9,7 @@ const props = defineProps({
   item: { type: Object, required: true },
   actionLabel: { type: String, default: '' },
   dense: { type: Boolean, default: false },
+  interactive: { type: Boolean, default: true },
 })
 const emit = defineEmits(['action'])
 const router = useRouter()
@@ -18,16 +19,20 @@ const coverStyle = computed(() => {
   return image ? { backgroundImage: `url(${imageUrl(image)})` } : {}
 })
 
-const open = () => router.push(`/item/${props.item.id}`)
+const canOpen = computed(() => props.interactive && props.item.id)
+const open = () => {
+  if (!canOpen.value) return
+  router.push(`/item/${props.item.id}`)
+}
 </script>
 
 <template>
   <article
     class="item-card"
-    :class="{ expired: ['EXPIRED', 'CLAIMED', 'REMOVED'].includes(item.status), dense }"
-    role="button"
-    tabindex="0"
-    :aria-label="`查看${item.title}详情`"
+    :class="{ expired: ['EXPIRED', 'CLAIMED', 'REMOVED'].includes(item.status), dense, 'non-interactive': !interactive }"
+    :role="canOpen ? 'button' : undefined"
+    :tabindex="canOpen ? 0 : undefined"
+    :aria-label="canOpen ? `查看${item.title}详情` : undefined"
     @click="open"
     @keydown.enter="open"
     @keydown.space.prevent="open"
@@ -50,7 +55,9 @@ const open = () => router.push(`/item/${props.item.id}`)
       </div>
       <div class="item-card-footer">
         <span>{{ daysLeft(item.expireTime) }}</span>
-        <el-button class="item-action" type="primary" link @click.stop="emit('action', item)">{{ actionLabel || '查看详情' }}</el-button>
+        <el-button v-if="interactive || actionLabel" class="item-action" type="primary" link @click.stop="emit('action', item)">
+          {{ actionLabel || '查看详情' }}
+        </el-button>
       </div>
     </div>
   </article>
